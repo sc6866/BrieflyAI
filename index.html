@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>BrieflyAI - 全球情报局</title>
+    <!-- 引入 Tailwind CDN 确保预览和初始部署样式正常 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <script>
+      // 配置 Tailwind 主题以匹配应用变量
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              accent: '#2563eb',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root {
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --accent: #2563eb;
+        --border: #e2e8f0;
+        --nav-bg: rgba(255, 255, 255, 0.85);
+        --input-bg: #f1f5f9;
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      }
+
+      .dark {
+        --bg-color: #0b0d11;
+        --card-bg: #161b22;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --accent: #38bdf8;
+        --border: #2d333b;
+        --nav-bg: rgba(11, 13, 17, 0.85);
+        --input-bg: #1c2128;
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+      }
+
+      body {
+        font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+        transition: background-color 0.3s ease;
+      }
+
+      .intel-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .backdrop-blur-xl { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^19.2.3",
+        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+        "react/": "https://esm.sh/react@^19.2.3/",
+        "@google/genai": "https://esm.sh/@google/genai@^1.35.0"
+      }
+    }
+    </script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

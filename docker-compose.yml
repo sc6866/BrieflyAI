@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  brieflyai:
+    build:
+      context: .
+      args:
+        # 将宿主机 / .env 中的 API_KEY 作为构建参数传入 Dockerfile 的 GEMINI_API_KEY
+        GEMINI_API_KEY: ${API_KEY}
+    container_name: briefly-ai-pro
+    ports:
+      - "9527:80"
+    environment:
+      # 生产环境建议通过同级目录下的 .env 文件注入 API_KEY
+      - API_KEY=${API_KEY}
+    restart: always
