@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  brieflyai:
+    build: .
+    container_name: briefly-ai-pro
+    ports:
+      - "9527:80"
+    environment:
+      # 生产环境建议通过同级目录下的 .env 文件注入 API_KEY
+      - API_KEY=${API_KEY}
+    restart: always

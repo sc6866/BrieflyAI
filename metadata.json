@@ -1,0 +1,7 @@
+{
+  "name": "BrieflyAI - Daily Intelligence Briefing",
+  "description": "An AI-powered dashboard that aggregates global news, filters noise, summarizes trends, and prepares reports for export to Google Docs and mobile.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
