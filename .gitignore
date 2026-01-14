@@ -30,3 +30,17 @@ dist-ssr
 
 # Docker
 .dockerignore
+
+# 临时文件和脚本
+*.ps1
+docker-daemon.json.example
+Dockerfile.cn
+docker-compose.cn.yml
+test-docker-connection.ps1
+fix-docker-mirror.ps1
+setup-docker-mirror.ps1
+
+# 文档文件（保留主要 README，忽略临时文档）
+快速修复指南.md
+部署说明-网络问题解决方案.md
+配置Docker镜像加速器.md

@@ -1,7 +1,12 @@
 ############################################################
 # 构建阶段：使用 Node 构建 Vite 前端应用
+# ⚠️ 重要：必须先配置 Docker 镜像加速器才能拉取镜像
+# 配置方法：Docker Desktop -> Settings -> Docker Engine -> 添加 registry-mirrors
 ############################################################
 FROM node:22-alpine AS builder
+
+# 配置 npm 使用国内镜像源
+RUN npm config set registry https://registry.npmmirror.com
 
 WORKDIR /app
 
@@ -30,6 +35,8 @@ RUN npm run build
 
 ############################################################
 # 运行阶段：使用 Nginx 提供静态文件服务
+# ⚠️ 重要：必须先配置 Docker 镜像加速器才能拉取镜像
+# 配置方法：Docker Desktop -> Settings -> Docker Engine -> 添加 registry-mirrors
 ############################################################
 FROM nginx:1.27-alpine
 

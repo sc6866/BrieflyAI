@@ -1,6 +1,7 @@
-version: '3.8'
+# version: '3.8'  # Docker Compose v2 不再需要 version
 
 services:
+  # 前端服务（Nginx 静态文件）
   brieflyai:
     build:
       context: .
@@ -14,3 +15,22 @@ services:
       # 生产环境建议通过同级目录下的 .env 文件注入 API_KEY
       - API_KEY=${API_KEY}
     restart: always
+
+  # 后端定时邮件服务
+  brieflyai-scheduler:
+    build:
+      context: ./server
+    container_name: briefly-ai-scheduler
+    environment:
+      # Gemini API Key
+      - API_KEY=${API_KEY}
+      # EmailJS 配置
+      - EMAIL_RECIPIENT=${EMAIL_RECIPIENT}
+      - EMAILJS_SERVICE_ID=${EMAILJS_SERVICE_ID}
+      - EMAILJS_TEMPLATE_ID=${EMAILJS_TEMPLATE_ID}
+      - EMAILJS_PUBLIC_KEY=${EMAILJS_PUBLIC_KEY}
+      # 定时时间（格式：HH:mm，默认 09:00）
+      - SCHEDULE_TIME=${SCHEDULE_TIME:-09:00}
+    restart: always
+    depends_on:
+      - brieflyai

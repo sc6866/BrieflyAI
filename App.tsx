@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BriefingReport, ReportStatus, CategoryConfig, UserPreferences, NewsItem } from './types';
-import { generateBriefing } from './services/geminiService';
+import { generateBriefing, generateTrendingData } from './services/geminiService';
 import ReportSection from './components/ReportSection';
 import AssistantChat from './components/AssistantChat';
 import SourceManager from './components/SourceManager';
 import TrendingList from './components/TrendingList';
-import emailjs from 'https://esm.sh/@emailjs/browser';
+import emailjs from '@emailjs/browser';
 
 const DEFAULT_CONFIGS: CategoryConfig[] = [
   { id: 'ai_trends', label: 'AI趋势', urls: ['openai.com', 'anthropic.com', 'deepseek.com', 'jiqizhixin.com'] },
@@ -45,6 +45,7 @@ const App: React.FC = () => {
   const [showAssistant, setShowAssistant] = useState(false);
   const [activeConsult, setActiveConsult] = useState<string | undefined>();
   const [activeTab, setActiveTab] = useState<'brief' | 'signals'>('brief');
+  const [isRefreshingTrending, setIsRefreshingTrending] = useState(false);
   const lastPushedDateRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -142,6 +143,35 @@ const App: React.FC = () => {
     return html;
   };
 
+  // 异步刷新趋势数据
+  const handleRefreshTrending = async () => {
+    if (!report) return;
+    
+    setIsRefreshingTrending(true);
+    try {
+      console.log('🔄 开始刷新趋势数据...');
+      const trendingData = await generateTrendingData();
+      
+      // 更新报告中的趋势数据
+      setReport({
+        ...report,
+        trending: trendingData,
+        cacheTimestamp: Date.now()
+      });
+      
+      // 更新本地存储
+      const updatedReport = { ...report, trending: trendingData, cacheTimestamp: Date.now() };
+      localStorage.setItem('b_report', JSON.stringify(updatedReport));
+      
+      console.log(`✅ 趋势数据刷新成功，共 ${trendingData.length} 条热点`);
+    } catch (error: any) {
+      console.error('❌ 趋势数据刷新失败:', error);
+      alert('趋势数据刷新失败: ' + (error.message || '未知错误'));
+    } finally {
+      setIsRefreshingTrending(false);
+    }
+  };
+
   const handleSync = async (silent = false) => {
     setStatus(ReportStatus.FETCHING);
     try {
@@ -157,22 +187,46 @@ const App: React.FC = () => {
       if (prefs.barkKey) safePush(`https://api.day.app/${prefs.barkKey}/${encodeURIComponent(reportTitle)}/${encodeURIComponent(mobileBody)}?group=BrieflyAI`);
 
       if (prefs.emailJsServiceId && prefs.emailJsTemplateId && prefs.emailJsPublicKey && prefs.emailRecipient) {
-        emailjs.send(
-          prefs.emailJsServiceId,
-          prefs.emailJsTemplateId,
-          {
-            to_email: prefs.emailRecipient,
-            subject: reportTitle,
-            date: data.date,
-            message_html: generateEmailHtml(data)
-          },
-          prefs.emailJsPublicKey
-        );
+        try {
+          const emailResult = await emailjs.send(
+            prefs.emailJsServiceId,
+            prefs.emailJsTemplateId,
+            {
+              to_email: prefs.emailRecipient,
+              subject: reportTitle,
+              date: data.date,
+              message_html: generateEmailHtml(data)
+            },
+            prefs.emailJsPublicKey
+          );
+          console.log('✅ 邮件发送成功:', emailResult);
+          if (!silent) {
+            alert('📧 邮件已成功发送到 ' + prefs.emailRecipient);
+          }
+        } catch (emailError: any) {
+          console.error('❌ 邮件发送失败:', emailError);
+          if (!silent) {
+            alert('⚠️ 邮件发送失败: ' + (emailError.text || emailError.message || '请检查 EmailJS 配置'));
+          }
+        }
+      } else {
+        if (!silent) {
+          console.warn('⚠️ 邮件配置不完整，跳过邮件发送');
+        }
       }
 
     } catch (err: any) {
       setStatus(ReportStatus.ERROR);
-      if (!silent) console.error("Sync Error:", err);
+      console.error("Sync Error:", err);
+      if (!silent) {
+        // 在控制台显示详细错误，方便调试
+        console.error("详细错误信息:", {
+          message: err.message,
+          status: err.status,
+          code: err.code,
+          stack: err.stack
+        });
+      }
     }
   };
 
@@ -259,7 +313,11 @@ const App: React.FC = () => {
                          <p className="text-sm font-bold opacity-60">抖音 / TikTok 实时热度与商业逻辑拆解</p>
                        </div>
                     </div>
-                    <TrendingList items={report.trending} />
+                    <TrendingList 
+                      items={report.trending} 
+                      onRefresh={handleRefreshTrending}
+                      isRefreshing={isRefreshingTrending}
+                    />
                   </div>
                 )}
              </div>
@@ -306,6 +364,10 @@ const App: React.FC = () => {
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold uppercase opacity-30 ml-2">Template ID</label>
                         <input type="text" className="w-full bg-[var(--input-bg)] border border-[var(--border)] rounded-2xl px-5 py-3 text-xs font-bold focus:border-[var(--accent)] transition-all outline-none" value={prefs.emailJsTemplateId} onChange={e => setPrefs({...prefs, emailJsTemplateId: e.target.value})} />
+                      </div>
+                      <div className="col-span-2 space-y-1.5">
+                        <label className="text-[9px] font-bold uppercase opacity-30 ml-2">Public Key</label>
+                        <input type="text" className="w-full bg-[var(--input-bg)] border border-[var(--border)] rounded-2xl px-5 py-3 text-xs font-bold focus:border-[var(--accent)] transition-all outline-none" placeholder="your-emailjs-public-key" value={prefs.emailJsPublicKey} onChange={e => setPrefs({...prefs, emailJsPublicKey: e.target.value})} />
                       </div>
                       <div className="col-span-2 space-y-1.5">
                         <label className="text-[9px] font-bold uppercase opacity-30 ml-2">Email Recipient (收件人)</label>
