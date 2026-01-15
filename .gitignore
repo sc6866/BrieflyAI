@@ -40,7 +40,13 @@ test-docker-connection.ps1
 fix-docker-mirror.ps1
 setup-docker-mirror.ps1
 
-# 文档文件（保留主要 README，忽略临时文档）
+# 临时文档文件（已删除，防止重新提交）
+安全检查报告.md
+安全建议.md
+API_Key无效问题排查.md
+故障排查-速率限制.md
+测试指南.md
+README-部署前必读.md
+配置Docker镜像加速器.md
 快速修复指南.md
 部署说明-网络问题解决方案.md
-配置Docker镜像加速器.md
