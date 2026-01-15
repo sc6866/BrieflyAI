@@ -355,7 +355,42 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="space-y-5">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">决策情报分发通道 (Email)</h4>
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">决策情报分发通道 (Email)</h4>
+                    <button
+                      onClick={() => {
+                        const envContent = `# 服务器端定时邮件配置（复制到 .env 文件）
+# ⚠️ 重要：前端配置只用于浏览器内手动发送，服务器端定时邮件需要配置 .env 文件
+EMAIL_RECIPIENT=${prefs.emailRecipient || 'your-email@example.com'}
+EMAILJS_SERVICE_ID=${prefs.emailJsServiceId || 'your-service-id'}
+EMAILJS_TEMPLATE_ID=${prefs.emailJsTemplateId || 'your-template-id'}
+EMAILJS_PUBLIC_KEY=${prefs.emailJsPublicKey || 'your-public-key'}
+SCHEDULE_TIME=${prefs.pushTime || '09:00'}`;
+                        navigator.clipboard.writeText(envContent).then(() => {
+                          alert('✅ 配置已复制到剪贴板！\n\n请将内容粘贴到服务器项目的 .env 文件中，然后重启服务：\n\ndocker-compose restart briefly-ai-scheduler');
+                        }).catch(() => {
+                          // 如果复制失败，显示在弹窗中
+                          const newWindow = window.open('', '_blank');
+                          if (newWindow) {
+                            newWindow.document.write(`<pre style="padding:20px;font-family:monospace;white-space:pre-wrap;">${envContent}</pre>`);
+                          }
+                        });
+                      }}
+                      className="text-[9px] font-black uppercase tracking-wider px-3 py-1.5 bg-[var(--accent)]/10 text-[var(--accent)] rounded-xl hover:bg-[var(--accent)]/20 transition-all border border-[var(--accent)]/20"
+                    >
+                      导出到 .env
+                    </button>
+                  </div>
+                  <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl">
+                    <div className="flex items-start gap-2">
+                      <svg className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <div className="text-[10px] text-amber-500/90 leading-relaxed">
+                        <strong className="font-black">重要提示：</strong> 前端配置仅用于浏览器内手动发送邮件。如需关闭浏览器后自动发送，请点击"导出到 .env"按钮，将配置复制到服务器的 <code className="bg-black/20 px-1.5 py-0.5 rounded">.env</code> 文件中，然后重启定时邮件服务。
+                      </div>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold uppercase opacity-30 ml-2">Service ID</label>

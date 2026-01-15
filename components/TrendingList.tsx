@@ -61,7 +61,7 @@ const TrendingList: React.FC<TrendingListProps> = ({ items, onRefresh, isRefresh
 
       {/* 抖音热点 */}
       {douyinItems.length > 0 && (
-        <div className="space-y-4">
+    <div className="space-y-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-1 h-8 bg-black rounded-full"></div>
             <h4 className="text-sm font-black uppercase tracking-widest">抖音实时热点</h4>
@@ -70,11 +70,11 @@ const TrendingList: React.FC<TrendingListProps> = ({ items, onRefresh, isRefresh
           {douyinItems.map((item, idx) => (
             <div key={`douyin-${idx}`} className="intel-card p-6 rounded-2xl flex gap-6 group hover:border-[var(--accent)] transition-all">
               <div className="flex-shrink-0 w-12 h-12 bg-black border border-[var(--border)] rounded-xl flex items-center justify-center text-sm font-black text-white opacity-80 group-hover:opacity-100 transition-all">
-                {item.rank || idx + 1}
-              </div>
-              
-              <div className="flex-grow">
-                <div className="flex items-center gap-2 mb-2">
+            {item.rank || idx + 1}
+          </div>
+          
+          <div className="flex-grow">
+            <div className="flex items-center gap-2 mb-2">
                   <span className="text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-tighter bg-black text-white">
                     抖音
                   </span>
@@ -125,33 +125,33 @@ const TrendingList: React.FC<TrendingListProps> = ({ items, onRefresh, isRefresh
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-tighter bg-[#25F4EE] text-black">
                     TikTok
-                  </span>
-                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md border ${
-                    item.type === 'PRODUCT' ? 'border-amber-500/50 text-amber-500 bg-amber-500/5' : 'border-[var(--accent)]/50 text-[var(--accent)] bg-[var(--accent)]/5'
-                  }`}>
-                    {item.type === 'PRODUCT' ? '热卖单品' : '话题爆点'}
-                  </span>
-                  <span className="text-[10px] font-mono font-bold opacity-40 ml-auto">HEAT: {item.heat}</span>
-                </div>
-                
-                <h3 className="text-base font-bold mb-3 group-hover:text-[var(--accent)] transition-colors leading-tight">
-                  {item.url ? (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline">{item.topic}</a>
-                  ) : item.topic}
-                </h3>
-                
-                <div className="bg-[var(--input-bg)]/50 p-4 rounded-xl border border-[var(--border)]/50">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)] mb-1.5 flex items-center gap-2">
-                    <span className="w-1 h-1 bg-[var(--accent)] rounded-full animate-pulse"></span>
-                    商业逻辑分析
-                  </div>
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed italic">
-                    {item.analysis}
-                  </p>
-                </div>
-              </div>
+              </span>
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md border ${
+                item.type === 'PRODUCT' ? 'border-amber-500/50 text-amber-500 bg-amber-500/5' : 'border-[var(--accent)]/50 text-[var(--accent)] bg-[var(--accent)]/5'
+              }`}>
+                {item.type === 'PRODUCT' ? '热卖单品' : '话题爆点'}
+              </span>
+              <span className="text-[10px] font-mono font-bold opacity-40 ml-auto">HEAT: {item.heat}</span>
             </div>
-          ))}
+            
+            <h3 className="text-base font-bold mb-3 group-hover:text-[var(--accent)] transition-colors leading-tight">
+              {item.url ? (
+                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline">{item.topic}</a>
+              ) : item.topic}
+            </h3>
+            
+            <div className="bg-[var(--input-bg)]/50 p-4 rounded-xl border border-[var(--border)]/50">
+              <div className="text-[10px] font-black uppercase tracking-widest text-[var(--accent)] mb-1.5 flex items-center gap-2">
+                <span className="w-1 h-1 bg-[var(--accent)] rounded-full animate-pulse"></span>
+                商业逻辑分析
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed italic">
+                {item.analysis}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
         </div>
       )}
 
